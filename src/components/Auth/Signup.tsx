@@ -26,13 +26,14 @@ export default function Signup() {
       <div className="auth-card">
         <h1>Melodify</h1>
         <h2>Create account</h2>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} autoComplete="off">
           <input
             type="text"
             placeholder="Full Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
+            autoComplete="off"
           />
           <input
             type="email"
@@ -40,6 +41,7 @@ export default function Signup() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            autoComplete="off"
           />
           <input
             type="password"
@@ -47,6 +49,7 @@ export default function Signup() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            autoComplete="new-password"
           />
           <button type="submit">Sign Up</button>
         </form>

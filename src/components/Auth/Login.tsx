@@ -25,13 +25,14 @@ export default function Login() {
       <div className="auth-card">
         <h1>Melodify</h1>
         <h2>Welcome back</h2>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} autoComplete="off">
           <input
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            autoComplete="off"
           />
           <input
             type="password"
@@ -39,6 +40,7 @@ export default function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            autoComplete="new-password"
           />
           <button type="submit">Log In</button>
         </form>

@@ -105,8 +105,8 @@
 
 .delete-playlist-btn {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 8px;
+  right: 8px;
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -279,20 +279,25 @@
   transform: scale(1.15);
 }
 
+.add-to-playlist-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  animation: fade-in 0.15s ease;
+}
+
 .add-to-playlist-popup {
-  position: absolute;
-  right: 0;
-  top: 100%;
-  z-index: 100;
   min-width: 220px;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: 8px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-  margin-top: 4px;
   animation: scale-in 0.15s ease;
-  transform-origin: top right;
 }
 
 .add-to-playlist-header {

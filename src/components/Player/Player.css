@@ -24,8 +24,8 @@
 }
 
 .player-img {
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   border-radius: 8px;
   overflow: hidden;
   background: var(--bg-highlight);
@@ -40,24 +40,21 @@
   transition: transform var(--transition-normal);
 }
 
-.player-img.playing img {
-  animation: spin 8s linear infinite;
-}
 
 .player-text {
   min-width: 0;
 }
 
 .player-title {
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: 1rem;
+  font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .player-artist {
-  font-size: 0.78rem;
+  font-size: 0.85rem;
   color: var(--text-secondary);
   white-space: nowrap;
   overflow: hidden;
@@ -97,6 +94,14 @@
   transform: scale(0.95);
 }
 
+.control-btn.active {
+  color: var(--accent);
+}
+
+.control-btn.repeat-one svg text {
+  fill: var(--accent);
+}
+
 .play-pause {
   color: var(--text-primary) !important;
   width: 36px;
@@ -113,6 +118,24 @@
 
 .play-pause:active {
   transform: scale(0.95) !important;
+}
+
+.player-empty {
+  justify-content: center;
+}
+
+.player-empty-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-subdued);
+  font-size: 0.85rem;
+  font-weight: 500;
+  opacity: 0.6;
+}
+
+.player-empty-message svg {
+  opacity: 0.5;
 }
 
 .progress-bar-container {
@@ -215,4 +238,12 @@
 
 .volume-bar:hover .volume-fill {
   background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+}
+
+.volume-label {
+  min-width: 32px;
+  font-size: 0.75rem;
+  color: var(--text-subdued);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }

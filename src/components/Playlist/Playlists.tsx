@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { getUserPlaylists, createPlaylist, deletePlaylist } from "../../services/playlistService";
 import { useAuth } from "../../contexts/AuthContext";
 import { useToast } from "../../contexts/ToastContext";
+import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import type { Playlist } from "../../types";
 import "./Playlist.css";
 
@@ -10,6 +11,7 @@ export default function Playlists() {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [showCreate, setShowCreate] = useState(false);
   const [newName, setNewName] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
   const { user } = useAuth();
   const { showToast } = useToast();
 
@@ -20,19 +22,24 @@ export default function Playlists() {
 
   const handleCreate = async () => {
     if (!newName.trim()) return;
-    await createPlaylist(user!.uid, newName.trim());
-    showToast(`Created "${newName.trim()}"`);
+    const name = newName.trim();
+    if (playlists.some((p) => p.name === name)) {
+      showToast(`Playlist "${name}" already exists`, "error");
+      return;
+    }
+    const id = await createPlaylist(user!.uid, name);
+    setPlaylists((prev) => [{ id, name, userId: user!.uid, songIds: [], coverUrl: "", createdAt: new Date() }, ...prev]);
+    showToast(`Created "${name}"`);
     setNewName("");
     setShowCreate(false);
   };
 
-  const handleDelete = async (id: string, name: string, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (confirm(`Delete "${name}"?`)) {
-      await deletePlaylist(id);
-      showToast(`Deleted "${name}"`);
-    }
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    await deletePlaylist(deleteTarget.id);
+    setPlaylists((prev) => prev.filter((p) => p.id !== deleteTarget.id));
+    showToast(`Deleted "${deleteTarget.name}"`);
+    setDeleteTarget(null);
   };
 
   return (
@@ -81,7 +88,7 @@ export default function Playlists() {
               )}
               <button
                 className="delete-playlist-btn"
-                onClick={(e) => handleDelete(pl.id, pl.name, e)}
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setDeleteTarget({ id: pl.id, name: pl.name }); }}
                 title="Delete playlist"
               >
                 <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
@@ -92,6 +99,14 @@ export default function Playlists() {
           </Link>
         ))}
       </div>
+
+      {deleteTarget && (
+        <ConfirmDialog
+          message={`Delete "${deleteTarget.name}"?`}
+          onConfirm={handleDelete}
+          onCancel={() => setDeleteTarget(null)}
+        />
+      )}
     </div>
   );
 }

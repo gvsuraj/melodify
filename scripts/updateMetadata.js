@@ -13,13 +13,8 @@ if (getApps().length === 0) {
 const db = getFirestore();
 
 const metadata = [
-  { t: "Dheemthanakka Thillana", a: "S. P. Balasubrahmanyam", al: "Villu Pattukaran", g: "Tamil Folk", d: 276 },
-  { t: "Endi Ippadi", a: "Santhosh Narayanan", al: "Enakkul Oruvan", g: "Tamil", d: 224 },
   { t: "Ennadi Maayavi Nee", a: "Sid Sriram", al: "Vada Chennai", g: "Tamil", d: 275 },
   { t: "Ennodu Nee Irundhal", a: "Sid Sriram, Sunitha Sarathy", al: "I", g: "Tamil", d: 355 },
-  { t: "Ennodu Nee Irundhal (Reprise)", a: "Chinmayi", al: "I", g: "Tamil", d: 298 },
-  { t: "God Bless U", a: "Yuvan Shankar Raja", al: "Aadavari Matalaku Ardhalu Verule", g: "Tamil", d: 246 },
-  { t: "Goindhammavaala", a: "D. Imman", al: "Velaikkaran", g: "Tamil", d: 267 },
   { t: "Golden Sparrow", a: "G. V. Prakash Kumar", al: "Nilavuku En Mel Ennadi Kobam", g: "Tamil", d: 231 },
   { t: "Hey Minnale", a: "Haricharan", al: "Amaran", g: "Tamil", d: 258 },
   { t: "Hey Sandakkara", a: "D. Imman", al: "Irudhi Suttru", g: "Tamil", d: 242 },
@@ -109,10 +104,10 @@ const metadata = [
   { t: "Vazhithunaiye", a: "Leon James", al: "Dragon", g: "Tamil", d: 256 },
   { t: "Veesum Velichathile", a: "Sean Roldan", al: "Naanum Rowdy Dhaan", g: "Tamil", d: 274 },
   { t: "Verithanam", a: "Thalapathy Vijay", al: "Bigil", g: "Tamil", d: 245 },
-  { t: "Water Packet", a: "Santhosh Narayanan", al: "Madras", g: "Tamil", d: 232 },
+  { t: "Water Packet", a: "A. R. Rahman", al: "Raayan", g: "Tamil", d: 232 },
   { t: "What A Karavad", a: "Anirudh Ravichander", al: "Velaiyilla Pattathari", g: "Tamil", d: 241 },
   { t: "Where Is The Party", a: "Mukesh, Priyadarshini", al: "Silambattam", g: "Tamil", d: 291 },
-  { t: "Whistle Podu", a: "A. R. Rahman", al: "The Greatest of All Time", g: "Tamil", d: 262 },
+  { t: "Whistle Podu", a: "Yuvan Shankar Raja", al: "The Greatest of All Time", g: "Tamil", d: 262 },
   { t: "Yaanji", a: "Anirudh Ravichander, Shakthisree Gopalan", al: "Vikram Vedha", g: "Tamil", d: 274 },
   { t: "Yaarenna Sonnalum", a: "Anthony Daasan", al: "Aambala", g: "Tamil", d: 247 },
   { t: "Yathe Yathe", a: "G. V. Prakash Kumar", al: "Aadukalam", g: "Tamil", d: 298 },

@@ -1,13 +1,16 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { usePlayer } from "../../contexts/PlayerContext";
 import { useToast } from "../../contexts/ToastContext";
 import "./Sidebar.css";
 
 export default function Sidebar() {
   const { user, logout } = useAuth();
+  const { stop } = usePlayer();
   const { showToast } = useToast();
 
   const handleLogout = async () => {
+    stop();
     await logout();
     showToast("Logged out successfully.");
   };
