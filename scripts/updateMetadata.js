@@ -1,16 +1,3 @@
-import { config } from "dotenv";
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
-import { readFileSync, existsSync } from "fs";
-import { initializeApp, getApps, cert } from "firebase-admin/app";
-import { getFirestore } from "firebase-admin/firestore";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-config({ path: resolve(__dirname, "..", ".env") });
-
-function getServiceAccount() {
-  const p = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
-  if (p && existsSync(resolve(__dirname, "..", p)))
     return JSON.parse(readFileSync(resolve(__dirname, "..", p), "utf-8"));
   const json = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
   if (json) return JSON.parse(json);
@@ -131,6 +118,25 @@ const metadata = [
   { t: "Yathe Yathe", a: "G. V. Prakash Kumar", al: "Aadukalam", g: "Tamil", d: 298 },
   { t: "Yedi", a: "Dhanush", al: "Nilavuku En Mel Ennadi Kobam", g: "Tamil", d: 214 },
   { t: "Yennai Maatrum Kadhale", a: "Sid Sriram", al: "Naanum Rowdy Dhaan", g: "Tamil", d: 286 },
+
+  { t: "Aalaporan Thamizhan", a: "A. R. Rahman, Kailash Kher, Sathya Prakash", al: "Mersal", g: "Tamil", d: 339 },
+  { t: "Adangaatha Asuran", a: "Dhanush, A. R. Rahman", al: "Raayan", g: "Tamil", d: 245 },
+  { t: "Ambikapathy", a: "Naresh Iyer", al: "Ambikapathy", g: "Tamil", d: 287 },
+  { t: "Arakkiyae", a: "Yuvan Shankar Raja", al: "Oh Manapenne", g: "Tamil", d: 267 },
+  { t: "Avalum Naanum", a: "Vijay Yesudas", al: "Achcham Yenbadhu Madamaiyada", g: "Tamil", d: 315 },
+  { t: "Chennai City Gangsta", a: "Anirudh Ravichander", al: "Vanakkam Chennai", g: "Tamil", d: 276 },
+  { t: "Aala Sachuputta", a: "Vijay Yesudas", al: "Vil Ambu", g: "Tamil", d: 254 },
+  { t: "Adiye", a: "Sid Sriram", al: "Bachelor", g: "Tamil", d: 292 },
+  { t: "Anbenum", a: "Sid Sriram", al: "Leo", g: "Tamil", d: 242 },
+  { t: "Ava Enna Enna", a: "Karthik, V. V. Prasanna", al: "Vaaranam Aayiram", g: "Tamil", d: 328 },
+  { t: "Aye Aye Aye", a: "Hip Hop Tamizha", al: "Aambala", g: "Tamil", d: 231 },
+  { t: "Daddy Mummy", a: "Mamta Mohandas, Naveen", al: "Villu", g: "Tamil", d: 295 },
+  { t: "Aasa Kooda", a: "Sai Abhyankkar", al: "Aasa Kooda", g: "Tamil Indie", d: 214 },
+  { t: "Agasatha", a: "Yuvan Shankar Raja", al: "Cuckoo", g: "Tamil", d: 278 },
+  { t: "Arabic Kuthu", a: "Anirudh Ravichander, Jonita Gandhi", al: "Beast", g: "Tamil", d: 301 },
+  { t: "Aval", a: "Pradeep Kumar", al: "Manithan", g: "Tamil", d: 269 },
+  { t: "Boomi Enna Suthudhe", a: "Anirudh Ravichander", al: "Ethir Neechal", g: "Tamil", d: 283 },
+  { t: "Dheema", a: "Anirudh Ravichander", al: "Love Insurance Kompany", g: "Tamil", d: 238 },
 ];
 
 // Build exact title→meta map
@@ -205,6 +211,38 @@ const fileOverrides = {
   "unakku-thaan": "Unakku Thaan",
   "soodaana": "Soodana",
   "soodana": "Soodana",
+  "aala-sachuputta-kannala": "Aala Sachuputta",
+  "aalaporan-thamizhan": "Aalaporan Thamizhan",
+  "aasa-kooda": "Aasa Kooda",
+  "adangaatha-asuran": "Adangaatha Asuran",
+  "adiye": "Adiye",
+  "agasatha": "Agasatha",
+  "ambikapathy": "Ambikapathy",
+  "anbenum": "Anbenum",
+  "arabic-kuthu": "Arabic Kuthu",
+  "arakkiyae": "Arakkiyae",
+  "ava-enna-enna": "Ava Enna Enna",
+  "aval": "Aval",
+  "avalum-naanum": "Avalum Naanum",
+  "aye-aye-aye": "Aye Aye Aye",
+  "boomi-enna-suthudhe": "Boomi Enna Suthudhe",
+  "chennai-city-gangsta": "Chennai City Gangsta",
+  "daddy-mummy": "Daddy Mummy",
+  "dheema": "Dheema",
+  "goindhammavaala": "Goindhammavaala",
+  "idhuvum-kadandhu-pogum": "Idhuvum Kadandhu Pogum",
+  "kaavaalaa": "Kaavaalaa",
+  "jinguchaa": "Jinguchaa",
+  "kadhaippoma": "Kadhaippoma",
+  "kannamma": "Kannamma",
+  "maatikkinaaru-orutharu": "Maatikkinaru Orutharu",
+  "nira": "Nira",
+  "pallikoodam": "Pallikoodam",
+  "sithira-puthiri": "Sithira Puthiri",
+  "thenmozhi": "Thenmozhi",
+  "ullaallaa": "Ullaallaa",
+  "verithanam": "Verithanam",
+  "yaanji": "Yaanji"
 };
 
 // Also build a dropboxPath-lowercase → metadata map from fileOverrides

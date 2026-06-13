@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "seed": "node scripts/seedSongs.js",
-    "fetch-covers": "node scripts/fetchCovers.js"
+    "fetch-covers": "node scripts/fetchCovers.js",
+    "apply-metadata": "node scripts/applyMetadata.js"
   },
   "devDependencies": {
     "@types/react": "^19.1.2",
