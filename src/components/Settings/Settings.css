@@ -15,17 +15,6 @@
   margin-bottom: 24px;
 }
 
-@media (max-width: 768px) {
-  .settings-section {
-    padding: 16px;
-  }
-
-  .settings-page h1 {
-    font-size: 1.3rem;
-    margin-bottom: 20px;
-  }
-}
-
 .settings-section h2 {
   font-size: 1.1rem;
   font-weight: 600;

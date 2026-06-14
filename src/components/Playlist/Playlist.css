@@ -3,22 +3,6 @@
   animation: fade-in 0.4s ease;
 }
 
-@media (max-width: 768px) {
-  .playlists-page .section-header h1 {
-    font-size: 1.3rem;
-  }
-
-  .create-btn {
-    padding: 8px 16px;
-    font-size: 0.8rem;
-  }
-
-  .create-playlist-form {
-    flex-direction: column;
-    padding: 12px;
-  }
-}
-
 .playlists-page .section-header {
   display: flex;
   align-items: center;
@@ -156,29 +140,6 @@
   margin-bottom: 40px;
   padding-bottom: 24px;
   border-bottom: 1px solid var(--border);
-}
-
-@media (max-width: 768px) {
-  .playlist-header {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-
-  .playlist-cover-large {
-    width: 160px;
-    height: 160px;
-  }
-
-  .playlist-info h1 {
-    font-size: 1.5rem;
-  }
-
-  .song-list-header {
-    display: none;
-  }
 }
 
 .playlist-cover-large {

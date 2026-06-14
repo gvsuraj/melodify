@@ -5,6 +5,7 @@ import {
   getDoc,
   query,
   where,
+  orderBy,
   addDoc,
   updateDoc,
   deleteDoc,
@@ -23,20 +24,14 @@ export function getUserPlaylists(
 ) {
   const q = query(
     playlistsCollection,
-    where("userId", "==", userId)
+    where("userId", "==", userId),
+    orderBy("createdAt", "desc")
   );
   return onSnapshot(q, (snapshot) => {
     const playlists = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     })) as Playlist[];
-
-    playlists.sort((a, b) => {
-      const aTime = new Date(a.createdAt).getTime();
-      const bTime = new Date(b.createdAt).getTime();
-      return bTime - aTime;
-    });
-
     callback(playlists);
   });
 }

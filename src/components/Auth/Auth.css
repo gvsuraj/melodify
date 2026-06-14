@@ -48,23 +48,6 @@
   border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-@media (max-width: 768px) {
-  .auth-card {
-    padding: 24px 20px;
-    max-width: none;
-    margin: 0 16px;
-  }
-
-  .auth-card h1 {
-    font-size: 1.6rem;
-  }
-
-  .auth-card h2 {
-    font-size: 1rem;
-    margin-bottom: 24px;
-  }
-}
-
 .auth-card h1 {
   font-size: 2rem;
   color: var(--accent);
@@ -83,36 +66,6 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-}
-
-.password-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.password-wrapper input {
-  width: 100%;
-  padding: 14px 44px 14px 16px;
-}
-
-.eye-btn {
-  position: absolute;
-  right: 8px;
-  padding: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  color: var(--text-subdued);
-  cursor: pointer;
-  transition: color var(--transition-fast);
-  border-radius: 50%;
-}
-
-.eye-btn:hover {
-  color: var(--text-primary);
 }
 
 .auth-card input {

@@ -3,21 +3,6 @@
   animation: fade-in 0.4s ease;
 }
 
-@media (max-width: 768px) {
-  .search-page {
-    padding: 0;
-  }
-
-  .search-header h1 {
-    font-size: 1.3rem;
-    margin-bottom: 16px;
-  }
-
-  .search-input-wrapper {
-    max-width: none;
-  }
-}
-
 .search-header h1 {
   font-size: 1.8rem;
   margin-bottom: 20px;

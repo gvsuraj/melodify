@@ -7,9 +7,9 @@
 .main-content {
   flex: 1;
   margin-left: var(--sidebar-width);
-  margin-bottom: calc(var(--player-height) + var(--bottom-nav-height));
+  margin-bottom: var(--player-height);
   overflow-y: auto;
-  padding: var(--padding-main-y) var(--padding-main-x);
+  padding: 24px 32px;
   background: linear-gradient(
     135deg,
     #1e1e1e 0%,
@@ -20,12 +20,6 @@
   );
   background-size: 400% 400%;
   animation: gradient-shift 20s ease infinite;
-}
-
-@media (max-width: 768px) {
-  .main-content {
-    margin-left: 0;
-  }
 }
 
 @keyframes gradient-shift {
