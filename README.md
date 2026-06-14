@@ -62,8 +62,9 @@ npm install
 npm --prefix server install
 ```
 
-### Project Structure
+## Project Structure
 
+```text
 Melodify/
 ├── .env.example              # Environment variable template
 ├── .gitignore                # Git ignore rules
@@ -97,26 +98,28 @@ Melodify/
 │   │   └── Vibe/             # Vibe Together rooms
 │   │
 │   ├── contexts/             # React context providers
-│   │   ├── AuthContext.tsx    # Firebase Auth state
-│   │   ├── PlayerContext.tsx  # Audio playback engine
-│   │   ├── ToastContext.tsx   # Notification queue
-│   │   └── VibeContext.tsx    # Room state + WebSocket
+│   │   ├── AuthContext.tsx   # Firebase Auth state
+│   │   ├── PlayerContext.tsx # Audio playback engine
+│   │   ├── ToastContext.tsx  # Notification queue
+│   │   └── VibeContext.tsx   # Room state + WebSocket
 │   │
 │   └── services/             # Service integrations
-│       ├── firebase.ts        # Firebase client init
-│       ├── songService.ts     # Songs (Firestore real-time)
-│       ├── playlistService.ts # Playlists CRUD
-│       ├── likeService.ts     # Like/unlike songs
-│       ├── dropboxService.ts  # Dropbox download links
-│       ├── vibeService.ts     # Room Firestore operations
-│       └── websocketService.ts# WebSocket client
+│       ├── firebase.ts       # Firebase client init
+│       ├── songService.ts    # Songs (Firestore real-time)
+│       ├── playlistService.ts# Playlists CRUD
+│       ├── likeService.ts    # Like/unlike songs
+│       ├── dropboxService.ts # Dropbox download links
+│       ├── vibeService.ts    # Room Firestore operations
+│       └── websocketService.ts # WebSocket client
 │
 ├── server/                   # Node.js backend
-│   ├── package.json           # Server dependencies
-│   └── index.js               # Express + WebSocket server
+│   ├── package.json          # Server dependencies
+│   └── index.js              # Express + WebSocket server
 │
 └── scripts/                  # CLI utilities
-    └── seedSongs.js           # Dropbox → Firestore seeder
+    └── seedSongs.js          # Dropbox → Firestore seeder
+```
+
 ### Development
 
 ```bash
