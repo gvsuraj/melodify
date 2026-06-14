@@ -47,14 +47,9 @@ export function VibeProvider({ children }: { children: ReactNode }) {
   const [sessionEnded, setSessionEnded] = useState(false);
   const roomIdRef = useRef(roomId);
   const userRef = useRef(user);
-  const roomRef = useRef(room);
-  const syncPlaybackRef = useRef<(update: vibeService.PlaybackUpdate) => Promise<void>>(
-    async () => {}
-  );
 
   useEffect(() => { roomIdRef.current = roomId; }, [roomId]);
   useEffect(() => { userRef.current = user; }, [user]);
-  useEffect(() => { roomRef.current = room; }, [room]);
 
   const isHost = room !== null && user !== null && room.hostId === user.uid;
   const isInRoom = roomId !== null;
@@ -76,23 +71,7 @@ export function VibeProvider({ children }: { children: ReactNode }) {
     }
     const unsub = vibeService.listenToRoom(roomId, (updated) => {
       if (updated) {
-        const deduped = { ...updated, members: dedupeMembers(updated.members) };
-        setRoom(deduped);
-
-        // Safety net: if a new member arrived via Firestore before WebSocket,
-        // pause playback to avoid sync collision
-        const prev = roomRef.current;
-        const u = userRef.current;
-        if (
-          prev &&
-          u &&
-          deduped.members.length > prev.members.length &&
-          prev.hostId === u.uid &&
-          prev.isPlaying
-        ) {
-          syncPlaybackRef.current({ isPlaying: false, currentTime: prev.currentTime });
-        }
-
+        setRoom({ ...updated, members: dedupeMembers(updated.members) });
         if ((updated as any).sessionEnded) {
           setSessionEnded(true);
         } else {
@@ -157,13 +136,6 @@ export function VibeProvider({ children }: { children: ReactNode }) {
                 ]),
               };
             });
-            // Pause playback if host and a song is playing — prevents sync collision
-            {
-              const r = roomRef.current;
-              if (r && r.hostId === u.uid && r.isPlaying) {
-                syncPlaybackRef.current({ isPlaying: false, currentTime: r.currentTime });
-              }
-            }
             break;
 
           case "member_left":
@@ -264,6 +236,21 @@ export function VibeProvider({ children }: { children: ReactNode }) {
     }
   }, [user, disconnectWs]);
 
+  const transferHost = useCallback(
+    async (uid: string) => {
+      if (!roomIdRef.current) return;
+      sendWsMessage("host_transfer", { newHostId: uid });
+      try {
+        await vibeService.transferHost(roomIdRef.current, uid);
+      } catch (err: unknown) {
+        const msg =
+          err instanceof Error ? err.message : "Failed to transfer host";
+        setRoomError(msg);
+      }
+    },
+    []
+  );
+
   const syncPlayback = useCallback(
     async (update: vibeService.PlaybackUpdate) => {
       if (!roomIdRef.current) return;
@@ -275,25 +262,6 @@ export function VibeProvider({ children }: { children: ReactNode }) {
       });
     },
     []
-  );
-
-  useEffect(() => { syncPlaybackRef.current = syncPlayback; }, [syncPlayback]);
-
-  const transferHost = useCallback(
-    async (uid: string) => {
-      if (!roomIdRef.current) return;
-      // Pause + reset before transferring — prevents sync collision
-      syncPlayback({ isPlaying: false, currentTime: 0 });
-      sendWsMessage("host_transfer", { newHostId: uid });
-      try {
-        await vibeService.transferHost(roomIdRef.current, uid);
-      } catch (err: unknown) {
-        const msg =
-          err instanceof Error ? err.message : "Failed to transfer host";
-        setRoomError(msg);
-      }
-    },
-    [syncPlayback]
   );
 
   const sendMessageFn = useCallback(

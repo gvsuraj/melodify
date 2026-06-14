@@ -19,10 +19,6 @@
   --border: #333;
   --player-height: 90px;
   --sidebar-width: 240px;
-  --bottom-nav-height: 0px;
-  --padding-main-x: 32px;
-  --padding-main-y: 24px;
-  --grid-col-min: 180px;
   --transition-fast: 0.15s ease;
   --transition-normal: 0.25s ease;
   --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -32,24 +28,6 @@
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
-}
-
-@media (max-width: 768px) {
-  :root {
-    --sidebar-width: 0px;
-    --player-height: 64px;
-    --bottom-nav-height: 56px;
-    --padding-main-x: 16px;
-    --padding-main-y: 16px;
-    --grid-col-min: 140px;
-  }
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-  :root {
-    --sidebar-width: 200px;
-    --grid-col-min: 160px;
-  }
 }
 
 html,
