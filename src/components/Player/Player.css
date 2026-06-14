@@ -280,6 +280,54 @@
   box-shadow: 0 0 16px rgba(255, 255, 255, 0.4);
 }
 
+@media (max-width: 768px) {
+  .player {
+    height: var(--player-height);
+    padding: 0 12px;
+  }
+
+  .player-song-info {
+    width: auto;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .player-img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .player-title {
+    font-size: 0.85rem;
+  }
+
+  .player-artist {
+    font-size: 0.75rem;
+  }
+
+  .player-controls {
+    max-width: none;
+    flex: 0 1 auto;
+  }
+
+  .controls-buttons {
+    gap: 12px;
+  }
+
+  .play-pause {
+    width: 28px;
+    height: 28px;
+  }
+
+  .progress-bar-container {
+    display: none;
+  }
+
+  .player-volume {
+    display: none;
+  }
+}
+
 .player-volume {
   display: flex;
   align-items: center;

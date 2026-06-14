@@ -18,6 +18,15 @@
   animation: scale-in 0.15s ease;
 }
 
+@media (max-width: 768px) {
+  .confirm-dialog {
+    min-width: auto;
+    width: 90vw;
+    padding: 24px 20px;
+    margin: 0 16px;
+  }
+}
+
 .confirm-message {
   font-size: 1rem;
   color: var(--text-primary);

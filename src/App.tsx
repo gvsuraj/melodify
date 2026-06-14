@@ -15,6 +15,7 @@ import Settings from "./components/Settings/Settings";
 import VibeTogether from "./components/Vibe/VibeTogether";
 import Room from "./components/Vibe/Room";
 import ToastContainer from "./components/Toast/Toast";
+import MobileNav from "./components/MobileNav/MobileNav";
 import "./App.css";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -81,6 +82,7 @@ function AppLayout() {
         </Routes>
       </main>
       <Player />
+      <MobileNav />
       <ToastContainer />
     </div>
   );
