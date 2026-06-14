@@ -62,6 +62,61 @@ npm install
 npm --prefix server install
 ```
 
+### Project Structure
+
+Melodify/
+├── .env.example              # Environment variable template
+├── .gitignore                # Git ignore rules
+├── index.html                # HTML entry point
+├── package.json              # Root package (React + Vite)
+├── tsconfig.json             # TypeScript config
+├── vite.config.js            # Vite config (WS proxy)
+│
+├── public/
+│   └── favicon.svg           # Site favicon
+│
+├── src/                      # React frontend
+│   ├── main.tsx              # App entry point
+│   ├── App.tsx               # Root router + layout
+│   ├── App.css               # Layout styles
+│   ├── index.css             # Global styles + variables
+│   ├── types.ts              # Shared TypeScript interfaces
+│   ├── vite-env.d.ts         # Vite type declarations
+│   │
+│   ├── components/           # UI components
+│   │   ├── Auth/             # Login, Signup
+│   │   ├── ConfirmDialog/    # Confirmation modal
+│   │   ├── Home/             # Landing page
+│   │   ├── Library/          # Liked songs
+│   │   ├── Player/           # Bottom music player
+│   │   ├── Playlist/         # Playlists CRUD + detail
+│   │   ├── Search/           # Song search
+│   │   ├── Settings/         # Profile & playback settings
+│   │   ├── Sidebar/          # Navigation sidebar
+│   │   ├── Toast/            # Toast notifications
+│   │   └── Vibe/             # Vibe Together rooms
+│   │
+│   ├── contexts/             # React context providers
+│   │   ├── AuthContext.tsx    # Firebase Auth state
+│   │   ├── PlayerContext.tsx  # Audio playback engine
+│   │   ├── ToastContext.tsx   # Notification queue
+│   │   └── VibeContext.tsx    # Room state + WebSocket
+│   │
+│   └── services/             # Service integrations
+│       ├── firebase.ts        # Firebase client init
+│       ├── songService.ts     # Songs (Firestore real-time)
+│       ├── playlistService.ts # Playlists CRUD
+│       ├── likeService.ts     # Like/unlike songs
+│       ├── dropboxService.ts  # Dropbox download links
+│       ├── vibeService.ts     # Room Firestore operations
+│       └── websocketService.ts# WebSocket client
+│
+├── server/                   # Node.js backend
+│   ├── package.json           # Server dependencies
+│   └── index.js               # Express + WebSocket server
+│
+└── scripts/                  # CLI utilities
+    └── seedSongs.js           # Dropbox → Firestore seeder
 ### Development
 
 ```bash
