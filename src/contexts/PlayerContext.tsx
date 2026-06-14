@@ -47,7 +47,10 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [volume, setVolumeState] = useState(0.7);
+  const [volume, setVolumeState] = useState(() => {
+    const saved = localStorage.getItem("melodify_volume");
+    return saved ? Math.max(0, Math.min(1, parseFloat(saved))) : 0.7;
+  });
   const [repeat, setRepeat] = useState<RepeatMode>(0);
   const repeatRef = useRef<RepeatMode>(0);
   const [shuffle, setShuffle] = useState(false);
@@ -68,6 +71,10 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     repeatRef.current = repeat;
   }, [repeat]);
+
+  useEffect(() => {
+    localStorage.setItem("melodify_volume", String(volume));
+  }, [volume]);
 
   useEffect(() => {
     const audio = audioRef.current;

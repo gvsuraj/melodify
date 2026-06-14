@@ -46,7 +46,8 @@
   font-weight: 500;
 }
 
-.settings-field input {
+.settings-field input[type="text"],
+.settings-field input[type="email"] {
   width: 100%;
   padding: 12px 14px;
   border-radius: var(--radius-sm);
@@ -66,6 +67,60 @@
 .settings-field input:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.volume-control-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.volume-icon {
+  flex-shrink: 0;
+  color: var(--text-secondary);
+}
+
+.volume-slider {
+  flex: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none;
+  cursor: pointer;
+}
+
+.volume-value {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  min-width: 36px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 .save-btn {

@@ -4,16 +4,18 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently -n client,server -c cyan,green \"npm run dev:client\" \"npm run dev:server\"",
+    "dev:client": "vite",
+    "dev:server": "node server/index.js",
     "build": "tsc -b && vite build",
+    "start": "node server/index.js",
     "preview": "vite preview",
-    "seed": "node scripts/seedSongs.js",
-    "fetch-covers": "node scripts/fetchCovers.js",
-    "apply-metadata": "node scripts/applyMetadata.js"
+    "seed": "node scripts/seedSongs.js"
   },
   "devDependencies": {
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
+    "concurrently": "^9.1.0",
     "typescript": "~6.0.2",
     "vite": "^8.0.12"
   },

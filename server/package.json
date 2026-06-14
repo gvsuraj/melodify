@@ -1,0 +1,14 @@
+{
+  "name": "melodify-server",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "firebase-admin": "^14.0.0",
+    "ws": "^8.18.0"
+  }
+}
