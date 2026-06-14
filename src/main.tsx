@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { PlayerProvider } from "./contexts/PlayerContext";
 import { ToastProvider } from "./contexts/ToastContext";
+import { VibeProvider } from "./contexts/VibeContext";
 import App from "./App";
 import "./index.css";
 
@@ -13,7 +14,9 @@ createRoot(document.getElementById("root")!).render(
       <AuthProvider>
         <PlayerProvider>
           <ToastProvider>
-            <App />
+            <VibeProvider>
+              <App />
+            </VibeProvider>
           </ToastProvider>
         </PlayerProvider>
       </AuthProvider>

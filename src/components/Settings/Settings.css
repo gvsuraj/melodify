@@ -1,0 +1,125 @@
+.settings-page {
+  max-width: 600px;
+  animation: fade-in 0.4s ease;
+}
+
+.settings-page h1 {
+  font-size: 1.8rem;
+  margin-bottom: 32px;
+}
+
+.settings-section {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.settings-section h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.settings-section h2::before {
+  content: "⚙";
+  font-size: 1.1rem;
+}
+
+.settings-danger h2::before {
+  content: "⚡";
+}
+
+.settings-field {
+  margin-bottom: 16px;
+}
+
+.settings-field label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.settings-field input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.settings-field input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.15);
+}
+
+.settings-field input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.save-btn {
+  padding: 10px 28px;
+  border-radius: 24px;
+  background: var(--accent);
+  color: #000;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: all var(--transition-fast);
+}
+
+.save-btn:hover:not(:disabled) {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-btn);
+}
+
+.save-btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+.save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.settings-danger {
+  border: 1px solid var(--border);
+}
+
+.settings-danger p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border-radius: 24px;
+  background: transparent;
+  color: var(--error);
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: 1px solid var(--error);
+  transition: all var(--transition-fast);
+}
+
+.logout-btn:hover {
+  background: var(--error);
+  color: #fff;
+  transform: translateY(-1px);
+}

@@ -22,6 +22,19 @@
 .section-header h2 {
   font-size: 1.4rem;
   font-weight: 700;
+  position: relative;
+  display: inline;
+}
+
+.section-header h2::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  border-radius: 1px;
 }
 
 .see-all {
@@ -56,7 +69,7 @@
 .song-card:hover {
   background: var(--bg-elevated);
   transform: translateY(-6px);
-  box-shadow: var(--shadow-card-hover);
+  box-shadow: var(--shadow-card-hover), 0 0 20px rgba(29, 185, 84, 0.08);
 }
 
 .song-card .card-img {
@@ -67,6 +80,15 @@
   overflow: hidden;
   margin-bottom: 12px;
   background: var(--bg-highlight);
+}
+
+.song-card .card-img::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(180deg, transparent 50%, rgba(0, 0, 0, 0.4));
+  pointer-events: none;
 }
 
 .song-card .card-img img {

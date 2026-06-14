@@ -15,6 +15,17 @@
   z-index: 100;
 }
 
+.player::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0.4;
+}
+
 .player-song-info {
   display: flex;
   align-items: center;
@@ -26,11 +37,17 @@
 .player-img {
   width: 64px;
   height: 64px;
-  border-radius: 8px;
+  border-radius: 50%;
   overflow: hidden;
   background: var(--bg-highlight);
   flex-shrink: 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border: 2px solid var(--bg-elevated);
+}
+
+.player-img.playing {
+  animation: spin 8s linear infinite;
+  box-shadow: 0 0 16px rgba(29, 185, 84, 0.3);
 }
 
 .player-img img {
@@ -38,6 +55,14 @@
   height: 100%;
   object-fit: cover;
   transition: transform var(--transition-normal);
+}
+
+.player-img.playing::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(29, 185, 84, 0.2);
 }
 
 
@@ -136,6 +161,54 @@
 
 .player-empty-message svg {
   opacity: 0.5;
+}
+
+.player-room-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.player-room-info .room-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse-text 1.5s ease-in-out infinite;
+}
+
+.player-room-code {
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.player-room-song {
+  color: var(--text-subdued);
+  font-size: 0.85rem;
+}
+
+.player-room-leave {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: all var(--transition-fast);
+}
+
+.player-room-leave:hover {
+  background: rgba(255, 82, 82, 0.1);
+  border-color: rgba(255, 82, 82, 0.3);
+  color: #ff5252;
 }
 
 .progress-bar-container {

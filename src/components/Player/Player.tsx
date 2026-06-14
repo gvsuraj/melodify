@@ -1,5 +1,6 @@
 import { useRef, useCallback, useEffect } from "react";
 import { usePlayer } from "../../contexts/PlayerContext";
+import { useVibe } from "../../contexts/VibeContext";
 import "./Player.css";
 
 function formatTime(seconds: number): string {
@@ -10,6 +11,7 @@ function formatTime(seconds: number): string {
 }
 
 export default function Player() {
+  const { isInRoom, room } = useVibe();
   const {
     currentSong,
     isPlaying,
@@ -59,6 +61,24 @@ export default function Player() {
   useEffect(() => {
     if (volume > 0) prevVolumeRef.current = volume;
   }, [volume]);
+
+  if (isInRoom) {
+    return (
+      <footer className="player">
+        <div className="player-room-info">
+          <span className="room-dot" />
+          <span>
+            Listening in room <span className="player-room-code">{room?.code}</span>
+          </span>
+          {room?.currentSong && (
+            <span className="player-room-song">
+              &middot; {room.currentSong.title} &mdash; {room.currentSong.artist}
+            </span>
+          )}
+        </div>
+      </footer>
+    );
+  }
 
   if (!currentSong) {
     return (

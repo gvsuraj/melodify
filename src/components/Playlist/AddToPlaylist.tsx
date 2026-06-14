@@ -10,9 +10,10 @@ interface Props {
   songId: string;
   songTitle: string;
   onClose: () => void;
+  onSongAdded?: (playlistId: string, songId: string) => void;
 }
 
-export default function AddToPlaylist({ songId, songTitle, onClose }: Props) {
+export default function AddToPlaylist({ songId, songTitle, onClose, onSongAdded }: Props) {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [showCreate, setShowCreate] = useState(false);
   const [newName, setNewName] = useState("");
@@ -33,6 +34,7 @@ export default function AddToPlaylist({ songId, songTitle, onClose }: Props) {
       return;
     }
     await addSongToPlaylist(playlistId, songId);
+    onSongAdded?.(playlistId, songId);
     showToast(`Added to "${pl.name}"`);
     onClose();
   };
@@ -41,6 +43,7 @@ export default function AddToPlaylist({ songId, songTitle, onClose }: Props) {
     if (!newName.trim()) return;
     const id = await createPlaylist(user!.uid, newName.trim());
     await addSongToPlaylist(id, songId);
+    onSongAdded?.(id, songId);
     showToast(`Created & added to "${newName.trim()}"`);
     setNewName("");
     onClose();
