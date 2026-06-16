@@ -21,3 +21,10 @@
   font-size: 0.9rem;
   color: var(--text-secondary);
 }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .library-page .section-header h1 {
+    font-size: 1.3rem;
+  }
+}

@@ -342,6 +342,7 @@
   animation: pulse 1.5s ease-in-out infinite;
 }
 
+/* ── Responsive ── */
 @keyframes pulse {
   0%, 100% { opacity: 0.5; }
   50% { opacity: 1; }
@@ -1102,4 +1103,228 @@
 
 .room-chat-input-row button:hover:not(:disabled) {
   opacity: 0.85;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .room-layout {
+    grid-template-columns: 1fr 260px;
+  }
+
+  .room-player-section {
+    padding: 24px;
+  }
+
+  .room-current-art {
+    width: 180px;
+    height: 180px;
+  }
+
+  .room-members-section {
+    padding: 20px 16px 24px;
+  }
+
+  .room-chat-section {
+    padding: 20px 24px 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .vibe-container {
+    padding: 24px 16px;
+    min-height: calc(100vh - var(--player-height) - 40px);
+    gap: 20px;
+  }
+
+  .vibe-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .vibe-icon {
+    width: 56px;
+    height: 56px;
+  }
+
+  .vibe-btn-large {
+    padding: 14px 28px;
+    font-size: 1rem;
+  }
+
+  .room-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .room-player-section {
+    padding: 20px 16px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .room-player {
+    max-width: 100%;
+  }
+
+  .room-current-art {
+    width: 160px;
+    height: 160px;
+  }
+
+  .room-current-info h2 {
+    font-size: 1.1rem;
+  }
+
+  .room-current-info p {
+    font-size: 0.85rem;
+  }
+
+  .room-controls {
+    gap: 14px;
+  }
+
+  .room-ctrl-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .room-play-btn {
+    width: 46px;
+    height: 46px;
+  }
+
+  .room-play-btn svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .room-members-section {
+    padding: 16px;
+  }
+
+  .room-search-section {
+    padding: 0 16px;
+    margin: 8px 0 12px;
+  }
+
+  .room-top-bar {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .room-code-badge {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+  }
+
+  .room-member-count {
+    font-size: 0.78rem;
+  }
+
+  .room-leave-btn,
+  .room-end-btn {
+    padding: 6px 12px;
+    font-size: 0.78rem;
+  }
+
+  .room-chat-section {
+    padding: 16px;
+    max-height: 320px;
+  }
+
+  .room-chat-msg {
+    max-width: 85%;
+  }
+
+  .room-chat-list {
+    max-height: 200px;
+  }
+
+  .room-queue-section {
+    margin-top: 16px;
+    padding-top: 16px;
+  }
+
+  .room-queue-list {
+    max-height: 200px;
+  }
+
+  .room-volume {
+    max-width: 160px;
+  }
+
+  .room-search-results {
+    max-height: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  .vibe-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .vibe-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .vibe-code-input {
+    font-size: 1.1rem;
+    padding: 12px 14px;
+    letter-spacing: 3px;
+  }
+
+  .room-current-art {
+    width: 130px;
+    height: 130px;
+  }
+
+  .room-current-info h2 {
+    font-size: 1rem;
+  }
+
+  .room-controls {
+    gap: 10px;
+  }
+
+  .room-ctrl-btn {
+    width: 30px;
+    height: 30px;
+  }
+
+  .room-ctrl-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .room-play-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .room-play-btn svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .room-top-bar {
+    padding: 10px 12px;
+  }
+
+  .room-volume {
+    max-width: 140px;
+  }
+
+  .room-chat-section h3,
+  .room-members-section h3,
+  .room-queue-section h3 {
+    font-size: 0.85rem;
+  }
+
+  .room-chat-text {
+    font-size: 0.78rem;
+  }
+
+  .room-chat-input-row input {
+    font-size: 0.78rem;
+    padding: 6px 10px;
+  }
 }

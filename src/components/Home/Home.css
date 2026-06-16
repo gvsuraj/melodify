@@ -160,6 +160,143 @@
   color: var(--text-subdued);
 }
 
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .song-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+  }
+
+  .playlist-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .greeting h1 {
+    font-size: 1.3rem;
+    margin-bottom: 24px;
+  }
+
+  .section {
+    margin-bottom: 28px;
+  }
+
+  .section-header h2 {
+    font-size: 1.15rem;
+  }
+
+  .song-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+
+  .playlist-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+
+  .song-card {
+    padding: 12px;
+  }
+
+  .playlist-card {
+    padding: 12px;
+  }
+
+  .song-card .play-btn {
+    width: 40px;
+    height: 40px;
+    bottom: 6px;
+    right: 6px;
+  }
+
+  .song-card .play-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .card-title {
+    font-size: 0.85rem;
+  }
+
+  .card-subtitle {
+    font-size: 0.75rem;
+  }
+
+  .song-row {
+    grid-template-columns: 24px 40px 1fr auto;
+    gap: 10px;
+    padding: 6px 8px;
+  }
+
+  .song-row-album {
+    display: none;
+  }
+
+  .song-idx {
+    font-size: 0.8rem;
+  }
+
+  .song-row-img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .song-row-title {
+    font-size: 0.82rem;
+  }
+
+  .song-row-artist {
+    font-size: 0.72rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .greeting h1 {
+    font-size: 1.1rem;
+  }
+
+  .song-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+
+  .playlist-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+
+  .song-card {
+    padding: 8px;
+  }
+
+  .playlist-card {
+    padding: 8px;
+  }
+
+  .song-card .play-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .song-card .play-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .song-row {
+    grid-template-columns: 20px 36px 1fr auto;
+    gap: 8px;
+  }
+
+  .song-row-img {
+    width: 32px;
+    height: 32px;
+  }
+}
+
 .song-list {
   display: flex;
   flex-direction: column;

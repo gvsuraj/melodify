@@ -417,6 +417,73 @@
   border: 1px solid var(--border);
 }
 
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .playlist-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .playlist-cover-large {
+    width: 180px;
+    height: 180px;
+  }
+
+  .playlist-info h1 {
+    font-size: 1.6rem;
+  }
+
+  .playlist-info .label {
+    font-size: 0.7rem;
+  }
+
+  .song-list-header {
+    display: none;
+  }
+
+  .playlist-songs .song-row {
+    grid-template-columns: 24px 40px 1fr auto;
+  }
+
+  .playlist-songs .song-row .song-row-album {
+    display: none;
+  }
+
+  .create-playlist-form {
+    flex-wrap: wrap;
+  }
+
+  .create-playlist-form input {
+    flex: 1 1 100%;
+  }
+
+  .add-to-playlist-popup {
+    min-width: 200px;
+    margin: 0 16px;
+    width: calc(100% - 32px);
+    max-width: 320px;
+  }
+}
+
+@media (max-width: 480px) {
+  .playlist-cover-large {
+    width: 140px;
+    height: 140px;
+  }
+
+  .playlist-info h1 {
+    font-size: 1.3rem;
+  }
+
+  .play-all-btn {
+    padding: 10px 20px;
+    font-size: 0.85rem;
+  }
+}
+
 .song-row-actions {
   position: relative;
   display: flex;

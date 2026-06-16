@@ -70,3 +70,18 @@
 .toast-close:hover {
   opacity: 1;
 }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .toast-container {
+    right: 8px;
+    bottom: calc(var(--player-height) + 8px);
+    left: 8px;
+  }
+
+  .toast {
+    max-width: 100%;
+    padding: 10px 14px;
+    font-size: 0.82rem;
+  }
+}
