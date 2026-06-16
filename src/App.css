@@ -60,3 +60,23 @@
 .section:nth-child(4) {
   animation-delay: 0.15s;
 }
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .main-content {
+    padding: 20px 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    padding: 60px 16px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    padding: 56px 12px 12px;
+  }
+}

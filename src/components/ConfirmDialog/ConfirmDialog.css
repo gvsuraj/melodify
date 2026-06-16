@@ -58,3 +58,23 @@
 .confirm-delete:hover {
   opacity: 0.85;
 }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .confirm-dialog {
+    min-width: 0;
+    width: calc(100% - 32px);
+    max-width: 360px;
+    padding: 24px 20px;
+  }
+
+  .confirm-message {
+    font-size: 0.9rem;
+  }
+
+  .confirm-cancel,
+  .confirm-delete {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+  }
+}

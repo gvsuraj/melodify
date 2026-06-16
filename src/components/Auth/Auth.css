@@ -185,3 +185,42 @@
 .auth-link a:hover {
   color: var(--accent);
 }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .auth-card {
+    padding: 28px 24px;
+    max-width: 360px;
+    margin: 0 16px;
+  }
+
+  .auth-card h1 {
+    font-size: 1.6rem;
+  }
+
+  .auth-card h2 {
+    font-size: 1rem;
+    margin-bottom: 24px;
+  }
+
+  .auth-card input {
+    padding: 12px 14px;
+    font-size: 0.95rem;
+  }
+
+  .auth-card button {
+    padding: 12px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 24px 20px;
+    margin: 0 12px;
+  }
+
+  .auth-card h1 {
+    font-size: 1.4rem;
+  }
+}
