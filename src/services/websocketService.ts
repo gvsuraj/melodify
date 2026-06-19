@@ -8,6 +8,8 @@ let messageHandler: MessageHandler | null = null;
 let roomId: string | null = null;
 let userId: string | null = null;
 let userName: string | null = null;
+let pingInterval: ReturnType<typeof setInterval> | null = null;
+let messageQueue: Array<{ event: string; payload: unknown }> = [];
 
 const MAX_RECONNECT_DELAY = 30000;
 const INITIAL_RECONNECT_DELAY = 1000;
@@ -49,6 +51,13 @@ function connect() {
         payload: { roomId, userId, userName },
       }));
     }
+    pingInterval = setInterval(() => {
+      sendWsMessage("ping", {});
+    }, 20000);
+    while (messageQueue.length > 0) {
+      const msg = messageQueue.shift();
+      if (msg) sendWsMessage(msg.event, msg.payload);
+    }
   };
 
   ws.onmessage = (event) => {
@@ -69,6 +78,10 @@ function connect() {
 
   ws.onclose = () => {
     ws = null;
+    if (pingInterval) {
+      clearInterval(pingInterval);
+      pingInterval = null;
+    }
     if (shouldReconnect) {
       scheduleReconnect();
     }
@@ -85,17 +98,30 @@ export function connectToRoom(
   uName: string,
   handler: MessageHandler
 ): void {
+  // Close any existing connection before starting a new one
+  if (ws) {
+    ws.onclose = null;
+    ws.onerror = null;
+    ws.onmessage = null;
+    ws.close();
+    ws = null;
+  }
+  if (reconnectTimer) {
+    clearTimeout(reconnectTimer);
+    reconnectTimer = null;
+  }
+  if (pingInterval) {
+    clearInterval(pingInterval);
+    pingInterval = null;
+  }
+
+  messageQueue = [];
   roomId = rId;
   userId = uId;
   userName = uName;
   messageHandler = handler;
   shouldReconnect = true;
   reconnectAttempts = 0;
-
-  if (reconnectTimer) {
-    clearTimeout(reconnectTimer);
-    reconnectTimer = null;
-  }
 
   connect();
 }
@@ -106,11 +132,16 @@ export function disconnectFromRoom(): void {
     clearTimeout(reconnectTimer);
     reconnectTimer = null;
   }
+  if (pingInterval) {
+    clearInterval(pingInterval);
+    pingInterval = null;
+  }
   if (ws) {
     ws.onclose = null;
     ws.close();
     ws = null;
   }
+  messageQueue = [];
   roomId = null;
   userId = null;
   userName = null;
@@ -121,6 +152,10 @@ export function disconnectFromRoom(): void {
 export function sendWsMessage(event: string, payload: unknown): void {
   if (ws?.readyState === WebSocket.OPEN) {
     ws.send(JSON.stringify({ event, payload }));
+    return;
+  }
+  if (messageQueue.length < 50) {
+    messageQueue.push({ event, payload });
   }
 }
 

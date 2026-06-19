@@ -107,13 +107,19 @@ export function listenToRoom(
   roomId: string,
   callback: (room: VibeRoom | null) => void
 ) {
-  return onSnapshot(doc(db, "rooms", roomId), (snap) => {
-    if (snap.exists()) {
-      callback({ id: snap.id, ...snap.data() } as VibeRoom);
-    } else {
-      callback(null);
+  return onSnapshot(
+    doc(db, "rooms", roomId),
+    (snap) => {
+      if (snap.exists()) {
+        callback({ id: snap.id, ...snap.data() } as VibeRoom);
+      } else {
+        callback(null);
+      }
+    },
+    (error) => {
+      console.error("listenToRoom failed:", error.message);
     }
-  });
+  );
 }
 
 export async function joinRoomByCode(
@@ -228,9 +234,15 @@ export function listenToMessages(
     orderBy("createdAt", "asc"),
     limit(100)
   );
-  return onSnapshot(q, (snap) => {
-    callback(snap.docs.map((d) => ({ id: d.id, ...d.data() } as ChatMessage)));
-  });
+  return onSnapshot(
+    q,
+    (snap) => {
+      callback(snap.docs.map((d) => ({ id: d.id, ...d.data() } as ChatMessage)));
+    },
+    (error) => {
+      console.error("listenToMessages failed:", error.message);
+    }
+  );
 }
 
 export async function deleteRoomMessages(roomId: string): Promise<void> {
@@ -241,7 +253,6 @@ export async function deleteRoomMessages(roomId: string): Promise<void> {
 
 export async function endSession(roomId: string): Promise<void> {
   await updateDoc(doc(db, "rooms", roomId), { sessionEnded: true });
-  await new Promise((r) => setTimeout(r, 3000));
   await deleteRoomMessages(roomId);
   await deleteDoc(doc(db, "rooms", roomId));
 }

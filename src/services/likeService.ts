@@ -37,9 +37,9 @@ export async function unlikeSong(
     where("songId", "==", songId)
   );
   const snap = await getDocs(q);
-  snap.docs.forEach(async (d) => {
+  for (const d of snap.docs) {
     await deleteDoc(doc(db, "likes", d.id));
-  });
+  }
 }
 
 export function getLikedSongs(
@@ -50,8 +50,14 @@ export function getLikedSongs(
     likesCollection,
     where("userId", "==", userId)
   );
-  return onSnapshot(q, (snapshot) => {
-    const songIds = snapshot.docs.map((doc) => doc.data().songId);
-    callback(songIds);
-  });
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const songIds = snapshot.docs.map((doc) => doc.data().songId);
+      callback(songIds);
+    },
+    (error) => {
+      console.error("getLikedSongs failed:", error.message);
+    }
+  );
 }

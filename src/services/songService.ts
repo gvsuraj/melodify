@@ -3,6 +3,7 @@ import {
   collection,
   doc,
   getDoc,
+  getDocs,
   query,
   where,
   orderBy,
@@ -14,13 +15,19 @@ const songsCollection = collection(db, "songs");
 
 export function getAllSongs(callback: (songs: Song[]) => void) {
   const q = query(songsCollection, orderBy("createdAt", "desc"));
-  return onSnapshot(q, (snapshot) => {
-    const songs = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as Song[];
-    callback(songs);
-  });
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const songs = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Song[];
+      callback(songs);
+    },
+    (error) => {
+      console.error("getAllSongs failed:", error.message);
+    }
+  );
 }
 
 export async function getSongById(songId: string): Promise<Song | null> {
@@ -35,25 +42,31 @@ export function searchSongs(
   searchTerm: string,
   callback: (songs: Song[]) => void
 ) {
+  const term = searchTerm.toLowerCase();
   const q = query(
     songsCollection,
-    orderBy("createdAt", "desc")
+    orderBy("title")
   );
-  return onSnapshot(q, (snapshot) => {
-    const allSongs = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as Song[];
-    const term = searchTerm.toLowerCase();
-    const filtered = allSongs.filter(
-      (s) =>
-        s.title.toLowerCase().includes(term) ||
-        s.artist.toLowerCase().includes(term) ||
-        s.album.toLowerCase().includes(term) ||
-        s.genre.toLowerCase().includes(term)
-    );
-    callback(filtered);
-  });
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const prefixMatches = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Song[];
+      const filtered = prefixMatches.filter(
+        (s) =>
+          s.title.toLowerCase().includes(term) ||
+          s.artist.toLowerCase().includes(term) ||
+          s.album.toLowerCase().includes(term) ||
+          s.genre.toLowerCase().includes(term)
+      );
+      callback(filtered);
+    },
+    (error) => {
+      console.error("searchSongs failed:", error.message);
+    }
+  );
 }
 
 export function getSongsByIds(
@@ -64,15 +77,40 @@ export function getSongsByIds(
     callback([]);
     return () => {};
   }
-  const q = query(songsCollection, where("__name__", "in", songIds.slice(0, 10)));
-  return onSnapshot(q, (snapshot) => {
-    const songs = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as Song[];
-    const ordered = songIds
-      .map((id) => songs.find((s) => s.id === id))
-      .filter(Boolean) as Song[];
-    callback(ordered);
-  });
+
+  const chunks: string[][] = [];
+  for (let i = 0; i < songIds.length; i += 10) {
+    chunks.push(songIds.slice(i, i + 10));
+  }
+
+  let cancelled = false;
+
+  (async () => {
+    const resultsMap = new Map<string, Song>();
+
+    for (const chunk of chunks) {
+      if (cancelled) return;
+      try {
+        const q = query(songsCollection, where("__name__", "in", chunk));
+        const snapshot = await getDocs(q);
+        snapshot.docs.forEach((doc) => {
+          resultsMap.set(doc.id, { id: doc.id, ...doc.data() } as Song);
+        });
+      } catch (err) {
+        console.error("getSongsByIds failed:", err);
+        return;
+      }
+    }
+
+    if (!cancelled) {
+      const ordered = songIds
+        .map((id) => resultsMap.get(id))
+        .filter(Boolean) as Song[];
+      callback(ordered);
+    }
+  })();
+
+  return () => {
+    cancelled = true;
+  };
 }

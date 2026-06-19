@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { readFileSync, existsSync } from "fs";
 import { createServer } from "http";
 import { join, dirname } from "path";
@@ -71,6 +72,7 @@ const wss = new WebSocketServer({ server, path: "/ws" });
 const rooms = new Map();           // roomId -> Map<ws, { userId, userName }>
 const clientInfo = new Map();      // ws -> { roomId, userId, userName }
 const roomPlaybackStates = new Map(); // roomId -> aggregated playback state
+const roomHosts = new Map();          // roomId -> hostUserId
 const persistTimers = new Map();      // roomId -> setTimeout
 
 function send(ws, event, payload) {
@@ -202,6 +204,10 @@ wss.on("connection", (ws) => {
         if (!rooms.has(roomId)) {
           rooms.set(roomId, new Map());
         }
+        if (!roomHosts.has(roomId)) {
+          // First client to join a new room becomes the host
+          roomHosts.set(roomId, userId);
+        }
         const clients = rooms.get(roomId);
         clients.set(ws, { userId, userName });
         clientInfo.set(ws, { roomId, userId, userName });
@@ -231,9 +237,22 @@ wss.on("connection", (ws) => {
           const count = clients.size;
           let newHostId = null;
 
-          // Determine new host if the leaving user was host
-          if (payload?.newHostId) {
-            newHostId = payload.newHostId;
+          // Handle host transfer if the leaving user was host
+          if (roomHosts.get(roomId) === userId) {
+            if (payload?.newHostId) {
+              newHostId = payload.newHostId;
+            } else if (count > 0) {
+              const firstRemaining = clients.keys().next().value;
+              if (firstRemaining) {
+                const firstInfo = clientInfo.get(firstRemaining);
+                if (firstInfo) newHostId = firstInfo.userId;
+              }
+            }
+            if (newHostId) {
+              roomHosts.set(roomId, newHostId);
+            } else {
+              roomHosts.delete(roomId);
+            }
           }
 
           broadcastAll(roomId, "member_left", {
@@ -246,6 +265,7 @@ wss.on("connection", (ws) => {
           if (count === 0) {
             rooms.delete(roomId);
             roomPlaybackStates.delete(roomId);
+            roomHosts.delete(roomId);
             if (persistTimers.has(roomId)) {
               clearTimeout(persistTimers.get(roomId));
               persistTimers.delete(roomId);
@@ -259,7 +279,8 @@ wss.on("connection", (ws) => {
 
       case "playback_update": {
         if (!info) return;
-        const { roomId } = info;
+        const { roomId, userId } = info;
+        if (roomHosts.get(roomId) !== userId) return;
         // Merge into aggregated room playback state
         const current = roomPlaybackStates.get(roomId) || {};
         const merged = { ...current, ...payload };
@@ -276,7 +297,7 @@ wss.on("connection", (ws) => {
         if (!info || !payload?.text?.trim()) return;
         const { roomId, userId, userName } = info;
         const msg = {
-          id: crypto.randomUUID(),
+          id: randomUUID(),
           senderId: userId,
           senderName: userName,
           text: payload.text.trim(),
@@ -290,7 +311,9 @@ wss.on("connection", (ws) => {
 
       case "host_transfer": {
         if (!info || !payload?.newHostId) return;
-        const { roomId } = info;
+        const { roomId, userId } = info;
+        if (roomHosts.get(roomId) !== userId) return;
+        roomHosts.set(roomId, payload.newHostId);
         broadcastAll(roomId, "host_changed", { newHostId: payload.newHostId });
         persistHostChange(roomId, payload.newHostId);
         resetHeartbeatTimeout();
@@ -299,7 +322,8 @@ wss.on("connection", (ws) => {
 
       case "end_session": {
         if (!info) return;
-        const { roomId } = info;
+        const { roomId, userId } = info;
+        if (roomHosts.get(roomId) !== userId) return;
         broadcastAll(roomId, "session_ended", {});
         const clients = rooms.get(roomId);
         if (clients) {
@@ -310,6 +334,7 @@ wss.on("connection", (ws) => {
           rooms.delete(roomId);
         }
         roomPlaybackStates.delete(roomId);
+        roomHosts.delete(roomId);
         if (persistTimers.has(roomId)) {
           clearTimeout(persistTimers.get(roomId));
           persistTimers.delete(roomId);
@@ -324,7 +349,7 @@ wss.on("connection", (ws) => {
     }
   });
 
-  ws.on("close", () => {
+  ws.on("close", async () => {
     clearInterval(heartbeatInterval);
     clearTimeout(heartbeatTimeout);
     const info = clientInfo.get(ws);
@@ -334,17 +359,57 @@ wss.on("connection", (ws) => {
       if (clients) {
         clients.delete(ws);
         const count = clients.size;
+        let newHostId = null;
+
+        // Handle host transfer if the disconnecting user was host
+        if (roomHosts.get(roomId) === userId) {
+          if (count > 0) {
+            const firstRemaining = clients.keys().next().value;
+            if (firstRemaining) {
+              const firstInfo = clientInfo.get(firstRemaining);
+              if (firstInfo) newHostId = firstInfo.userId;
+            }
+          }
+          if (newHostId) {
+            roomHosts.set(roomId, newHostId);
+          } else {
+            roomHosts.delete(roomId);
+          }
+        }
+
         broadcastAll(roomId, "member_left", {
           userId,
           userName,
-          newHostId: null,
+          newHostId,
           memberCount: count,
         });
         if (count === 0) {
           rooms.delete(roomId);
+          roomHosts.delete(roomId);
         }
       }
       clientInfo.delete(ws);
+
+      // Clean up Firestore members when user disconnects without leave_room
+      if (db) {
+        try {
+          const roomRef = db.collection("rooms").doc(roomId);
+          const roomSnap = await roomRef.get();
+          if (roomSnap.exists) {
+            const data = roomSnap.data();
+            const remaining = (data.members || []).filter((m) => m.uid !== userId);
+            if (remaining.length === 0) {
+              deleteRoom(roomId);
+            } else {
+              let newHostId = data.hostId;
+              if (data.hostId === userId) {
+                newHostId = remaining[0].uid;
+              }
+              await roomRef.update({ members: remaining, hostId: newHostId });
+            }
+          }
+        } catch { /* ignore cleanup errors */ }
+      }
     }
   });
 
