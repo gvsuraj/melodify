@@ -56,6 +56,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const [shuffle, setShuffle] = useState(false);
   const originalQueueRef = useRef<Song[] | null>(null);
   const nextRef = useRef<() => void>(() => {});
+  const queueIndexRef = useRef(queueIndex);
 
   useEffect(() => {
     audioRef.current = new Audio();
@@ -71,6 +72,10 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     repeatRef.current = repeat;
   }, [repeat]);
+
+  useEffect(() => {
+    queueIndexRef.current = queueIndex;
+  }, [queueIndex]);
 
   useEffect(() => {
     localStorage.setItem("melodify_volume", String(volume));
@@ -89,10 +94,8 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       } else if (mode === 1) {
         audio.currentTime = 0;
         audio.play().then(() => setIsPlaying(true)).catch(() => {});
-        setRepeat(0);
       } else {
-        audio.currentTime = 0;
-        audio.play().then(() => setIsPlaying(true)).catch(() => {});
+        nextRef.current();
       }
     };
     const onError = () => {
@@ -118,7 +121,8 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     const directLink = getDirectDownloadLink(song.dropboxLink);
     audio.src = directLink;
     audio.load();
-    audio.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+    setIsPlaying(true);
+    audio.play().catch(() => setIsPlaying(false));
     setCurrentSong(song);
     setCurrentTime(0);
     setDuration(0);
@@ -137,7 +141,6 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         setQueueState([]);
       }
       loadAndPlay(song);
-      setIsPlaying(true);
     },
     [loadAndPlay]
   );
@@ -235,6 +238,12 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     originalQueueRef.current = null;
   }, []);
 
+  useEffect(() => {
+    const onLogout = () => stop();
+    window.addEventListener("melodify:logout", onLogout);
+    return () => window.removeEventListener("melodify:logout", onLogout);
+  }, [stop]);
+
   const toggleRepeat = useCallback(() => {
     setRepeat((prev) => {
       if (prev === 0) return 1;
@@ -254,7 +263,9 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       } else {
         setQueueState((q) => {
           if (q.length < 2) return q;
-          const currentIdx = queueIndex;
+          originalQueueRef.current = [...q];
+          const currentIdx = queueIndexRef.current;
+          if (currentIdx < 0 || currentIdx >= q.length) return q;
           const current = q[currentIdx];
           const rest = q.filter((_, i) => i !== currentIdx);
 
@@ -269,7 +280,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         return true;
       }
     });
-  }, [queueIndex]);
+  }, []);
 
   return (
     <PlayerContext.Provider

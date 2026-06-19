@@ -1,5 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
+import { fetchSignInMethodsForEmail } from "firebase/auth";
+import { auth } from "../../services/firebase";
 import { useAuth } from "../../contexts/AuthContext";
 import { useToast } from "../../contexts/ToastContext";
 import "./Auth.css";
@@ -15,6 +17,27 @@ export default function Signup() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
+    if (!email.trim()) return;
+
+    try {
+      const methods = await fetchSignInMethodsForEmail(auth, email.trim());
+      if (methods.length > 0) {
+        if (!methods.includes("password")) {
+          const providerName = methods.includes("google.com") ? "Google" : methods[0];
+          const msg = `This email already uses ${providerName} sign-in. Please click "Continue with ${providerName}" below to log in.`;
+          setError(msg);
+          showToast(msg, "error");
+          return;
+        }
+        const msg = "An account with this email already exists. Please log in instead.";
+        setError(msg);
+        showToast(msg, "error");
+        return;
+      }
+    } catch {
+      // fetchSignInMethodsForEmail failed; proceed with normal signup
+    }
+
     try {
       await signup(email, password, name);
       showToast("Account created! Welcome to Melodify.");

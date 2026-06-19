@@ -48,6 +48,10 @@ export default function Room() {
   const chatEndRef = useRef<HTMLDivElement | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Song[]>([]);
+  const songListenersRef = useRef<{
+    onCanPlay: () => void;
+    onError: () => void;
+  } | null>(null);
 
   useEffect(() => {
     isHostRef.current = isHost;
@@ -133,6 +137,7 @@ export default function Room() {
       audio.removeEventListener("timeupdate", onTimeUpdate);
       audio.removeEventListener("durationchange", onDurationChange);
       audio.removeEventListener("ended", onEnded);
+      audioRef.current = null;
     };
   }, []);
 
@@ -177,6 +182,13 @@ export default function Room() {
     const audio = audioRef.current;
 
     if (room.currentSong?.id !== (audio.dataset.songId || undefined)) {
+      // Clean up any previous lingering listeners before switching songs
+      if (songListenersRef.current) {
+        audio.removeEventListener("canplay", songListenersRef.current.onCanPlay);
+        audio.removeEventListener("error", songListenersRef.current.onError);
+        songListenersRef.current = null;
+      }
+
       if (room.currentSong) {
         const directLink = getDirectDownloadLink(room.currentSong.dropboxLink);
         const hostTime = room.currentTime || 0;
@@ -189,6 +201,7 @@ export default function Room() {
         const onCanPlay = () => {
           audio.removeEventListener("canplay", onCanPlay);
           audio.removeEventListener("error", onError);
+          songListenersRef.current = null;
           audio.currentTime = hostTime;
           setLocalTime(hostTime);
           if (room?.isPlaying) {
@@ -198,10 +211,12 @@ export default function Room() {
         const onError = () => {
           audio.removeEventListener("canplay", onCanPlay);
           audio.removeEventListener("error", onError);
+          songListenersRef.current = null;
           setLocalPlaying(false);
         };
         audio.addEventListener("canplay", onCanPlay);
         audio.addEventListener("error", onError);
+        songListenersRef.current = { onCanPlay, onError };
       } else {
         audio.pause();
         audio.src = "";
@@ -238,7 +253,7 @@ export default function Room() {
     const interval = setInterval(() => {
       const audio = audioRef.current;
       if (!audio || audio.paused) return;
-      const hostTime = room.currentTime || 0;
+      const hostTime = roomRef.current?.currentTime || 0;
       const local = audio.currentTime;
       const diff = local - hostTime;
       const drift = Math.abs(diff);
@@ -254,7 +269,7 @@ export default function Room() {
       }
     }, 800);
     return () => clearInterval(interval);
-  }, [room, isHost]);
+  }, [room?.currentSong?.id, isHost]);
 
   useEffect(() => {
     if (!isInRoom) {
@@ -274,6 +289,14 @@ export default function Room() {
   const playAudio = useCallback((song: Song, time: number) => {
     const audio = audioRef.current;
     if (!audio) return;
+
+    // Remove any previous play-now listeners to prevent accumulation
+    if (songListenersRef.current) {
+      audio.removeEventListener("canplay", songListenersRef.current.onCanPlay);
+      audio.removeEventListener("error", songListenersRef.current.onError);
+      songListenersRef.current = null;
+    }
+
     const directLink = getDirectDownloadLink(song.dropboxLink);
     audio.src = directLink;
     audio.dataset.songId = song.id;
@@ -285,16 +308,19 @@ export default function Room() {
     const onCanPlay = () => {
       audio.removeEventListener("canplay", onCanPlay);
       audio.removeEventListener("error", onError);
+      songListenersRef.current = null;
       audio.currentTime = time;
       audio.play().then(() => setLocalPlaying(true)).catch(() => setLocalPlaying(false));
     };
     const onError = () => {
       audio.removeEventListener("canplay", onCanPlay);
       audio.removeEventListener("error", onError);
+      songListenersRef.current = null;
       setLocalPlaying(false);
     };
     audio.addEventListener("canplay", onCanPlay);
     audio.addEventListener("error", onError);
+    songListenersRef.current = { onCanPlay, onError };
   }, []);
 
   const handlePlayNow = (song: Song) => {

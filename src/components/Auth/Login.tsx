@@ -1,5 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
+import { fetchSignInMethodsForEmail } from "firebase/auth";
+import { auth } from "../../services/firebase";
 import { useAuth } from "../../contexts/AuthContext";
 import { useToast } from "../../contexts/ToastContext";
 import "./Auth.css";
@@ -14,7 +16,18 @@ export default function Login() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
+    if (!email.trim()) return;
+
     try {
+      const methods = await fetchSignInMethodsForEmail(auth, email.trim());
+      if (methods.length > 0 && !methods.includes("password")) {
+        const providerName = methods.includes("google.com") ? "Google" : methods[0];
+        const msg = `This email uses ${providerName} sign-in. Please click "Continue with ${providerName}" below.`;
+        setError(msg);
+        showToast(msg, "error");
+        return;
+      }
+
       await login(email, password);
       showToast("Welcome back!");
     } catch (err: unknown) {
@@ -22,6 +35,8 @@ export default function Login() {
       const code = (err as { code?: string }).code || "";
       if (code === "auth/too-many-requests") {
         msg = "Too many attempts. Please wait 10-15 minutes or try signing up first if you don't have an email/password account.";
+      } else if (code === "auth/invalid-credential") {
+        msg = "Invalid email or password. If you previously used Google, try that method instead.";
       }
       console.error("Login error:", { code, message: msg });
       setError(msg);
@@ -45,7 +60,7 @@ export default function Login() {
       <div className="auth-card">
         <h1>Melodify</h1>
         <h2>Welcome back</h2>
-        <form onSubmit={handleSubmit} autoComplete="off">
+        <form onSubmit={handleSubmit}>
           <input
             type="text"
             placeholder="Email"

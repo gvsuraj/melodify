@@ -41,14 +41,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signup = async (email: string, password: string, name: string) => {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
-    await updateProfile(cred.user, { displayName: name });
+    try {
+      await updateProfile(cred.user, { displayName: name });
+    } catch {
+      console.warn("Failed to set display name on signup");
+    }
     if (auth.currentUser) {
-      setUser({ ...auth.currentUser });
+      setUser(auth.currentUser);
     }
   };
 
   const logout = async () => {
     await signOut(auth);
+    window.dispatchEvent(new CustomEvent("melodify:logout"));
   };
 
   const loginWithGoogle = async () => {
@@ -59,7 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const updateDisplayName = async (name: string) => {
     if (auth.currentUser) {
       await updateProfile(auth.currentUser, { displayName: name });
-      setUser({ ...auth.currentUser });
+      setUser(auth.currentUser);
     }
   };
 

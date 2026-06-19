@@ -5,7 +5,6 @@ import {
   getDoc,
   query,
   where,
-  orderBy,
   addDoc,
   updateDoc,
   deleteDoc,
@@ -24,16 +23,31 @@ export function getUserPlaylists(
 ) {
   const q = query(
     playlistsCollection,
-    where("userId", "==", userId),
-    orderBy("createdAt", "desc")
+    where("userId", "==", userId)
   );
-  return onSnapshot(q, (snapshot) => {
-    const playlists = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as Playlist[];
-    callback(playlists);
-  });
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const playlists = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Playlist[];
+      playlists.sort((a, b) => {
+        const toMs = (t: unknown): number => {
+          if (!t) return 0;
+          if (t instanceof Date) return t.getTime();
+          if (typeof (t as { toMillis?: () => number }).toMillis === "function") return (t as { toMillis: () => number }).toMillis();
+          return 0;
+        };
+        return toMs(b.createdAt) - toMs(a.createdAt);
+      });
+      callback(playlists);
+    },
+    (error) => {
+      console.error("getUserPlaylists failed — missing Firestore index?", error.message);
+      callback([]);
+    }
+  );
 }
 
 export async function createPlaylist(

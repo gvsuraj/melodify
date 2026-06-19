@@ -38,7 +38,7 @@ const VibeContext = createContext<VibeContextType | null>(null);
 
 export function VibeProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
-  const { pause } = usePlayer();
+  const { stop } = usePlayer();
   const [roomId, setRoomId] = useState<string | null>(null);
   const [room, setRoom] = useState<vibeService.VibeRoom | null>(null);
   const [messages, setMessages] = useState<vibeService.ChatMessage[]>([]);
@@ -71,7 +71,10 @@ export function VibeProvider({ children }: { children: ReactNode }) {
     }
     const unsub = vibeService.listenToRoom(roomId, (updated) => {
       if (updated) {
-        setRoom({ ...updated, members: dedupeMembers(updated.members) });
+        setRoom((prev) => {
+          if (!prev) return { ...updated, members: dedupeMembers(updated.members) };
+          return { ...prev, ...updated, members: dedupeMembers(updated.members) };
+        });
         if ((updated as any).sessionEnded) {
           setSessionEnded(true);
         } else {
@@ -175,7 +178,7 @@ export function VibeProvider({ children }: { children: ReactNode }) {
     setRoomLoading(true);
     setRoomError(null);
     try {
-      pause();
+      stop();
       const id = await vibeService.createRoom(
         user.uid,
         user.displayName || user.email || "Unknown"
@@ -190,7 +193,7 @@ export function VibeProvider({ children }: { children: ReactNode }) {
     } finally {
       setRoomLoading(false);
     }
-  }, [user, pause, connectWs]);
+  }, [user, stop, connectWs]);
 
   const joinRoom = useCallback(
     async (code: string) => {
@@ -199,7 +202,7 @@ export function VibeProvider({ children }: { children: ReactNode }) {
       setRoomLoading(true);
       setRoomError(null);
       try {
-        pause();
+        stop();
         const updatedRoom = await vibeService.joinRoomByCode(
           code.toUpperCase(),
           user.uid,
@@ -216,25 +219,26 @@ export function VibeProvider({ children }: { children: ReactNode }) {
         setRoomLoading(false);
       }
     },
-    [user, pause, connectWs]
+    [user, stop, connectWs]
   );
 
   const leaveRoom = useCallback(async () => {
     if (!user || !roomIdRef.current) return;
     const rId = roomIdRef.current;
     const uId = user.uid;
-    disconnectWs();
     setRoomLoading(true);
     try {
-      await vibeService.leaveRoom(rId, uId);
+      const { newHostId } = await vibeService.leaveRoom(rId, uId);
+      sendWsMessage("leave_room", { newHostId });
     } catch {
       // room may already be deleted
     } finally {
+      disconnectWs();
       setRoomId(null);
       setRoom(null);
       setRoomLoading(false);
     }
-  }, [user, disconnectWs]);
+  }, [user, disconnectWs, sendWsMessage]);
 
   const transferHost = useCallback(
     async (uid: string) => {
