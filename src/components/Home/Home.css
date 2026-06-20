@@ -235,6 +235,13 @@
     display: none;
   }
 
+  .song-row-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: flex-end;
+  }
+
   .song-idx {
     font-size: 0.8rem;
   }
