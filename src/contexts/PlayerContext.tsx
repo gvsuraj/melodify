@@ -56,6 +56,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const [shuffle, setShuffle] = useState(false);
   const originalQueueRef = useRef<Song[] | null>(null);
   const nextRef = useRef<() => void>(() => {});
+  const prevRef = useRef<() => void>(() => {});
   const queueIndexRef = useRef(queueIndex);
 
   useEffect(() => {
@@ -80,6 +81,38 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     localStorage.setItem("melodify_volume", String(volume));
   }, [volume]);
+
+  useEffect(() => {
+    if (!("mediaSession" in navigator)) return;
+    if (currentSong) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: currentSong.title,
+        artist: currentSong.artist,
+        album: currentSong.album || "",
+        artwork: currentSong.coverUrl
+          ? [{ src: currentSong.coverUrl, sizes: "256x256", type: "image/jpeg" }]
+          : [],
+      });
+    } else {
+      navigator.mediaSession.metadata = null;
+    }
+  }, [currentSong]);
+
+  useEffect(() => {
+    if (!("mediaSession" in navigator)) return;
+    navigator.mediaSession.playbackState = isPlaying ? "playing" : "paused";
+  }, [isPlaying]);
+
+  useEffect(() => {
+    if (!("mediaSession" in navigator)) return;
+    navigator.mediaSession.setActionHandler("play", () => resume());
+    navigator.mediaSession.setActionHandler("pause", () => pause());
+    navigator.mediaSession.setActionHandler("nexttrack", () => nextRef.current());
+    navigator.mediaSession.setActionHandler("previoustrack", () => prevRef.current());
+    navigator.mediaSession.setActionHandler("seekto", (details) => {
+      if (details.seekTime != null) seek(details.seekTime);
+    });
+  }, []);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -195,6 +228,10 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     loadAndPlay(queue[prevIdx]);
     setIsPlaying(true);
   }, [queue, queueIndex, loadAndPlay]);
+
+  useEffect(() => {
+    prevRef.current = prev;
+  }, [prev]);
 
   const seek = useCallback((time: number) => {
     if (audioRef.current) {
